@@ -420,7 +420,7 @@ def gen(g):
 
   g.function_group(
       reduction_template, "Vector Widening Integer Reduction Functions",
-      REF_DOC_URL + "##152-vector-widening-integer-reduction-operations",
+      REF_DOC_URL + "#152-vector-widening-integer-reduction-operations",
       ["wredsum"], ITYPES, SEWS, LMULS,
       decorators.has_masking_no_maskedoff_reduction_policy)
 
@@ -527,12 +527,12 @@ def gen(g):
 
   g.function_group(
       misc_op_template, "Vector LMUL Extension Functions",
-      REF_DOC_URL + "vector-lmul-extension-and-truncation-functions",
+      REF_DOC_URL + "#vector-lmul-extension-and-truncation-functions",
       ["vlmul_ext_v"], TYPES, SEWS, LMULS, decorators.has_no_masking)
 
   g.function_group(
       misc_op_template, "Vector LMUL Truncation Functions",
-      REF_DOC_URL + "vector-lmul-extension-and-truncation-functions",
+      REF_DOC_URL + "#vector-lmul-extension-and-truncation-functions",
       ["vlmul_trunc_v"], TYPES, SEWS, LMULS, decorators.has_no_masking)
 
   g.function_group(misc_op_template, "Vector Initialization Functions",

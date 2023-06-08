@@ -6,3 +6,6 @@ legacy-api-unit-tests/policy-non-overloaded-api-testing/rvv-v0p10-compatible-hea
 legacy-api-unit-tests/non-policy-overloaded-api-testing/rvv-v0p10-compatible-headers
 legacy-api-unit-tests/policy-overloaded-api-testing/rvv-v0p10-compatible-headers
 
+test.o
+test.c
+data.json

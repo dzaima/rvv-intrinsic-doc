@@ -79,7 +79,7 @@ cci ← ⟨⟩
           "archs"⋈ ⋈"rvv"
           "desc" ⋈ "<br>" Jn @⊸≢¨⊸/ ⟨
             {nname≢name? "Overloaded name: <code>"∾name∾"</code>"; @}
-            {g3n≢@? g3n; g2n} # {(g3n≡"masked") ∨ g3n≡"non-masked"? g2n∾" ("∾g3n∾")"; g3n≢@? g3n; g2n}
+            {(g3n≢"non-masked") ∧ g3n≢@? g3n; g2n} # {(g3n≡"masked") ∨ g3n≡"non-masked"? g2n∾" ("∾g3n∾")"; g3n≢@? g3n; g2n}
           ⟩
           "categories"   ⋈ ⋈ {𝕨∾'|'∾𝕩}´ @⊸≢¨⊸/ ⟨g1n, g2n, g3n⟩
           "implDesc"     ⋈ g2l

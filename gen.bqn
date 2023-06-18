@@ -1,5 +1,4 @@
-bqnlibs‿mbqn ← 2↑•args
-resFile ← {3≡≠𝕩? 2⊑𝕩; "data.json"} •args
+bqnlibs‿resFile ← •args
 
 ⟨Export⟩ ← •Import bqnlibs•file.At "json.bqn"
 Str ← ×∘≠◶""‿⊢
@@ -59,8 +58,10 @@ cci ← ⟨⟩
     {1<≠𝕩? {!@≢⊑𝕩}¨ 𝕩; @} pc
     
     { g3n‿fs:
-      rl ← {
-        nrt‿nname‿nargs ← PF noi⊑no ⋄ noi+↩1
+      rl ← @⊸≢⊸/ {
+        noi+↩1
+        g3n≡"masked"?@;
+        nrt‿nname‿nargs ← PF (noi-1)⊑no
         rt‿name‿args ← PF 𝕩
         ! nrt ≡ rt
         ! nargs ≡ args
@@ -68,7 +69,7 @@ cci ← ⟨⟩
         
         cname ← nname
         # cname ⊢_RMF_"__riscv_"↩
-        cci∾↩< {∨´ (∨´"float16"⊸⍷)¨ rt<⊸∾⊑¨args? @; ⟨≠res, rt, cname, args⟩}
+        cci∾↩< {{"_t"≡¯2↑𝕩? 'x'≡¯4⊑𝕩; 0}rt? @; ⟨≠res, rt, cname, args⟩} # tuple-returning functions crash
         res∾↩ < Map ⟨
           "ret"  ⋈ Map ⟨"type"‿rt⟩
           "name" ⋈ nname
@@ -78,7 +79,7 @@ cci ← ⟨⟩
           "archs"⋈ ⋈"rvv"
           "desc" ⋈ "<br>" Jn @⊸≢¨⊸/ ⟨
             {nname≢name? "Overloaded name: <code>"∾name∾"</code>"; @}
-            {(g3n≡"masked") ∨ g3n≡"non-masked"? g2n∾" ("∾g3n∾")"; g3n≢@? g3n; g2n}
+            {g3n≢@? g3n; g2n} # {(g3n≡"masked") ∨ g3n≡"non-masked"? g2n∾" ("∾g3n∾")"; g3n≢@? g3n; g2n}
           ⟩
           "categories"   ⋈ ⋈ {𝕨∾'|'∾𝕩}´ @⊸≢¨⊸/ ⟨g1n, g2n, g3n⟩
           "implDesc"     ⋈ g2l
@@ -88,6 +89,7 @@ cci ← ⟨⟩
     }¨ pc
   }¨ g2
 }¨ g1
+
 
 testC ← "test.c"
 testO ← "test.o"
@@ -102,6 +104,7 @@ _cArgs1_ ← { badMap‿Val _𝕣_ Otherwise:
 _tryC ← { CArgs _𝕣 𝕩:
   ccode ← ∾⟨
     "#include <riscv_vector.h>", ln
+    "typedef _Float16 float16_t;", ln
     "typedef float float32_t;", ln
     "typedef double float64_t;", ln
   ⟩
@@ -120,7 +123,11 @@ _tryC ← { CArgs _𝕣 𝕩:
   testC •FChars ccode
   c‿o‿e ⇐ {raw⇐1}•SH ⟨
     "clang-17", "-fno-color-diagnostics", "--target=riscv64-linux-gnu", "-ferror-limit=999999"
-    "-march=rv64gcv", "-O3", "-c"
+    
+    "-menable-experimental-extensions"
+    "-march=rv64gcvzvfh0p1"
+    
+    "-O3", "-c"
     "-o", testO
     testC
   ⟩

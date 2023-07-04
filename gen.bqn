@@ -68,14 +68,14 @@ cci ← ⟨⟩
         
         
         cname ← nname
+        cname {𝕩/˜¬∨⟜»⍟2 0‿0∾˜"_rm"⍷𝕩}↩ # drop _rm as the tested clang doesn't require it
         # cname ⊢_RMF_"__riscv_"↩
-        cci∾↩< {{"_t"≡¯2↑𝕩? 'x'≡¯4⊑𝕩; 0}rt? @; ⟨≠res, rt, cname, args⟩} # tuple-returning functions crash
+        cci∾↩< {{"_t"≡¯2↑𝕩? 'x'≡¯4⊑𝕩; 0}rt? @; ∨´"_rm!"⍷nname? @; ⟨≠res, rt, cname, args⟩} # tuple-returning functions crash, rounding-mode intrinsics don't have support on my local clang
         res∾↩ < Map ⟨
           "ret"  ⋈ Map ⟨"type"‿rt⟩
           "name" ⋈ nname
           "args" ⋈ {t‿n: Map⟨"type"⋈t, "name"⋈n⟩}¨ args
           
-          "cpu"  ⋈ "risc-v"
           "archs"⋈ ⋈"rvv"
           "desc" ⋈ "<br>" Jn @⊸≢¨⊸/ ⟨
             {nname≢name? "Overloaded name: <code>"∾name∾"</code>"; @}
@@ -90,6 +90,15 @@ cci ← ⟨⟩
   }¨ g2
 }¨ g1
 
+ConstantMask ← { # argument is list of type-name pairs
+  r ← {
+    ∨´ m ← 𝕩≡¨<"unsigned int"? m;
+    ∨´ m ← 𝕩≡¨<"size_t"? m;
+    ! 0
+  } ⊑¨ 𝕩
+  ! 1 = +´r
+  r
+}
 
 testC ← "test.c"
 testO ← "test.o"
@@ -97,7 +106,7 @@ CArgs0 ← {n‿rt‿cname‿args: •Repr⌾⊑ 𝕩∾< ", "Jn 1⊑¨ args}
 _cArgs1_ ← { badMap‿Val _𝕣_ Otherwise:
   {
     n‿rt‿cname‿args: n⊑badMap?
-      •Repr⌾⊑ 𝕩∾< ", "Jn {"size_t"‿·: Val n; 1⊑𝕩}¨ args;
+      •Repr⌾⊑ 𝕩∾< ", "Jn (ConstantMask args) {𝕨? Val n; 1⊑𝕩}¨ args;
     Otherwise 𝕩
   }
 }
@@ -170,11 +179,14 @@ _tryC ← { CArgs _𝕣 𝕩:
   }¨ 1↓ (+` ((∨´"<testfn"⊸⍷) ∧ (":"≡¯1↑⊢))¨)⊸⊔ ln SV o
   res ↩ res {
     𝕩≡⟨⟩?𝕨;
+    r ← 𝕨
     [v,asm] ← ⍉>𝕩
-    𝕨 {{{"size_t"≡1‿0⊑𝕩? 𝕩∾˘≍˘"info"⋈∾⟨"range: [",•Repr⌊´v,";",•Repr⌈´v,"]"⟩; 𝕩}¨𝕩}⌾(1‿2⊸⊑) 𝕩}⍟(⟨@⟩≢v)↩
+    r {{(ConstantMask 1⊏¨𝕩) {𝕨? 𝕩∾˘≍˘"info"⋈∾⟨"range: [",•Repr⌊´v,";",•Repr⌈´v,"]"⟩; 𝕩}¨ 𝕩}⌾(1‿2⊸⊑) 𝕩}⍟(⟨@⟩≢v)↩
     AE ← {⟨⟩: ⋈"(no-op)"; 𝕩}
-    𝕨∾˘↩≍˘ "implInstr"⋈ Str "<br>"Jn v {𝕨𝕊⟨x⟩:AE x; ∾𝕨{(∾⟨"Constant ",•Repr𝕨,":"⟩) <⊸∾ "  "⊸∾¨ AE 𝕩}¨𝕩} asm
-    𝕨∾˘↩≍˘ "implInstrRaw"⋈ Str ∾ ∾⟜' '¨ ∾asm
+    { 𝕊:
+      r∾˘↩≍˘ "implInstrRaw"⋈ Str ¯1↓ ∾ ∾⟜(@+10)¨ ∾asm
+    }⍟⊢ 1 ≡ ≠asm
+    r
   }¨ ai⊔av
 }
 

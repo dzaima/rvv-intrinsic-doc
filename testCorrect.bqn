@@ -1,4 +1,4 @@
-# copy(JSON.stringify(query_found.flatMap(c=>[c, ...(c.nameAlts||[])]).map(c=>[c.name,c.ret.type,[],c.args.map(c=>c.type)])))
+# copy(JSON.stringify(query_found.flatMap(c=>c.variationsIncl).map(c=>[c.name,c.ret.type,[],c.args.map(c=>c.type)])))
 bqnlibs‿in ← •args
 ⟨Parse,Export⟩ ← •Import bqnlibs•file.At"json.bqn"
 fns ← Parse •FChars in
@@ -6,9 +6,10 @@ fns ← Parse •FChars in
 ts ← {¬⊑'*'∊𝕩}¨⊸/ ⍷(1⊑¨fns)∾∾3⊑¨fns
 vts ← {(𝕩≢"void")∧'v'≡⊑𝕩}¨⊸/ ts
 
+Fixup ← {𝕩}
 
 CLn ← { base‿ret‿ts‿args𝕊i:
-  inv ← ∾⟨base, "(", 1↓∾','∾¨{'*'≡¯1⊑𝕩?"0";'v'≡⊑𝕩?"v_"∾𝕩;"0"}¨ args, ");"⟩
+  inv ← ∾⟨Fixup base, "(", 1↓∾','∾¨{'*'≡¯1⊑𝕩?"0";'v'≡⊑𝕩?"v_"∾𝕩;"0"}¨ args, ");"⟩
   ⟨{ret≡"void"? inv; ∾⟨ret, " r",•Repr i, " = ", inv⟩}⟩
 }
 
@@ -31,6 +32,6 @@ c‿o‿e ← •SH⟨
   testC
 ⟩
 
-•Out {0≡c? "Passed!"; "Exit code: "∾•Repr c}
+•Out {0≡c? ∾⟨"Passed ", •Repr ≠fns, "!"⟩; "Exit code: "∾•Repr c}
 •Out o
 •Out e

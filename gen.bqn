@@ -5,8 +5,8 @@ Str ← ×∘≠◶""‿⊢
 Map ← {𝕨≍○((@≢¨𝕩)⊸/)𝕩}˝⍉∘>
 
 FE ← ×∘≠¨⊸/
-_sw ← {𝕗≡(≠𝕗)↑𝕩}
-SSW ← {FE (+`𝕨 _sw¨ 𝕩)⊔𝕩}
+_sw ← {𝕗≡(≠𝕗)↑𝕩} # starts with
+SSW ← {FE (+`𝕨 _sw¨ 𝕩)⊔𝕩} # split on starts-with
 SV ← {(+`(≠𝕩)↑𝕨⍷𝕩) ⊔ 𝕩}
 S1 ← {(⊑1⊐˜𝕨=𝕩) (↑⋈1⊸+⊸↓) 𝕩}
 Jn ← {(-≠𝕨)↓""(⊣∾𝕨∾⊢)´𝕩}
@@ -28,66 +28,69 @@ _RMF_ ← {(𝔽𝕘⊸(≠∘⊣ × ⊣≡(𝔽≠)⊸↑))⊸↓ 𝕩}
 ln←@+10
 
 •Out "Loading non-overloaded.."
-no ← (∨´"__"⊸⍷)¨⊸/ ∾•FLines¨ ∧(<•file.At¨•file.List) "auto-generated/intrinsic_funcs"
-noi ← 0
+nall ← FE •FLines "auto-generated/intrinsic_funcs.md" # ∾•FLines¨ ∧(<•file.At¨•file.List) "auto-generated/intrinsic_funcs"
 
 •Out "Loading overloaded.."
-lns ← FE •FLines "auto-generated/overloaded_intrinsic_funcs.md"
+oall ← (∨´"__"⊸⍷)¨⊸/ •FLines "auto-generated/overloaded_intrinsic_funcs.md"
 
 •Out "Processing.."
 res ← ⟨⟩
-g1 ← "## " SSW lns
 cci ← ⟨⟩
+
 {
-  g1n ← -_RMF_" Functions" ¯1↓3↓⊑𝕩
-  {𝕊: g1n↩"Miscellaneous"}⍟⊢ g1n≡"Miscellaneous Vector Functions"
-  g2 ← "### "SSW 1↓𝕩
-  # •Out g1n
+  curri ← 0
+  g1 ← "## " SSW nall
   {
-    g2r ← ¯1↓4↓⊑𝕩
-    ! '['≡⊑g2r
-    g2n‿g2l ← 0‿¯1↓¨ 1‿2↓¨ "](" SV g2r
-    g2n -_RMF_" Functions"↩
-    g2n '`'⊸≠⊸/↩
-    # •Out "  "∾g2n∾" @ "∾g2l
-    code ← ((≠`∧¬) "```"_sw¨)⊸/ 1↓𝕩
-    pc ← {"// "≡3↑⊑𝕩? ⟨3↓⊑𝕩 ⋄ 1↓𝕩⟩; ⟨@ ⋄ 𝕩⟩}¨ "// " SSW code
-    {2≡≠pc? @‿"masked functions"≡⊑¨pc? pc ⟨"non-masked", "masked"⟩⌾(⊑¨)↩; @}
-    
-    # {n‿g: •Out "    "∾n}¨ pc
-    {1<≠𝕩? {!@≢⊑𝕩}¨ 𝕩; @} pc
-    
-    { g3n‿fs:
-      rl ← @⊸≢⊸/ {
-        noi+↩1
-        g3n≡"masked"?@;
-        nrt‿nname‿nargs ← PF (noi-1)⊑no
-        rt‿name‿args ← PF 𝕩
-        ! nrt ≡ rt
-        ! nargs ≡ args
-        
-        
-        cname ← nname
-        # cname ⊢_RMF_"__riscv_"↩
-        cci∾↩< {{"_t"≡¯2↑𝕩? 'x'≡¯4⊑𝕩; 0}rt? @; ⟨≠res, rt, cname, args⟩} # tuple-returning functions crash
-        res∾↩ < Map ⟨
-          "ret"  ⋈ Map ⟨"type"‿rt⟩
-          "name" ⋈ nname
-          "args" ⋈ {t‿n: Map⟨"type"⋈t, "name"⋈n⟩}¨ args
+    g1n ← -_RMF_" Functions" ¯1↓3↓⊑𝕩
+    {𝕊: g1n↩"Miscellaneous"}⍟⊢ g1n≡"Miscellaneous Vector Functions"
+    g2 ← "### "SSW 1↓𝕩
+    # •Out g1n
+    {
+      g2r ← ¯1↓4↓⊑𝕩
+      ! '['≡⊑g2r
+      g2n‿g2l ← 0‿¯1↓¨ 1‿2↓¨ "](" SV g2r
+      g2n -_RMF_" Functions"↩
+      g2n '`'⊸≠⊸/↩
+      # •Out "  "∾g2n∾" @ "∾g2l
+      code ← ((≠`∧¬) "```"_sw¨)⊸/ 1↓𝕩
+      code "// masked functions"⊸≢¨⊸/↩
+      pc ← {"// "_sw ⊑𝕩? ⟨3↓⊑𝕩 ⋄ 1↓𝕩⟩; ⟨@ ⋄ 𝕩⟩}¨ "// " SSW code
+      pc ↩ ∾ {@‿l: {𝕩⋈˜@‿"masked"⊑˜∨´"_m "⍷𝕩}¨l; s‿l: s⊸⋈¨ l}¨ pc
+      
+      # {n‿g: •Out "    "∾n}¨ pc
+      
+      {
+        g3n‿fn:
+          curri+↩1
+          g3n≡"masked"?@;
+        g3n‿fn:
+          nrt‿nname‿nargs ← PF fn
+          ort‿oname‿oargs ← PF (curri-1)⊑oall
+          ! nrt ≡ ort
+          ! nargs ≡ oargs
+          # •Show 𝕩‿((curri-1)⊑oall)‿nargs‿oargs
           
-          "archs"⋈ ⋈"rvv"
-          "desc" ⋈ "<br>" Jn @⊸≢¨⊸/ ⟨
-            {nname≢name? "Overloaded name: <code>"∾name∾"</code>"; @}
-            {(g3n≢"non-masked") ∧ g3n≢@? g3n; g2n} # {(g3n≡"masked") ∨ g3n≡"non-masked"? g2n∾" ("∾g3n∾")"; g3n≢@? g3n; g2n}
-          ⟩
-          "categories"   ⋈ ⋈ {𝕨∾'|'∾𝕩}´ @⊸≢¨⊸/ ⟨g1n, g2n, g3n⟩
-          "implDesc"     ⋈ g2l
-        ⟩
-        @
-      }¨ fs
-    }¨ pc
-  }¨ g2
-}¨ g1
+          
+          cname ← nname
+          # cname ⊢_RMF_"__riscv_"↩
+          cci∾↩< {{"_t"≡¯2↑𝕩? 'x'≡¯4⊑𝕩; 0}ort? @; ⟨≠res, ort, cname, oargs⟩} # tuple-returning functions crash
+          res∾↩ < Map ⟨
+            "ret"  ⋈ Map ⟨"type"‿ort⟩
+            "name" ⋈ nname
+            "args" ⋈ {t‿n: Map⟨"type"⋈t, "name"⋈n⟩}¨ oargs
+            
+            "archs"⋈ ⋈"rvv"
+            "desc" ⋈ "<br>" Jn @⊸≢¨⊸/ ⟨
+              {nname≢oname? "Overloaded name: <code>"∾oname∾"</code>"; @}
+              {(g3n≢"non-masked") ∧ g3n≢@? g3n; g2n} # {(g3n≡"masked") ∨ g3n≡"non-masked"? g2n∾" ("∾g3n∾")"; g3n≢@? g3n; g2n}
+            ⟩
+            "categories"   ⋈ ⋈ {𝕨∾'|'∾𝕩}´ @⊸≢¨⊸/ ⟨g1n, g2n, g3n⟩
+            "implDesc"     ⋈ g2l
+          ⟩ ⋄ @
+      }¨ pc
+    }¨ g2
+  }¨ g1
+}
 
 ConstantMask ← { # argument is list of type-name pairs
   r ← {

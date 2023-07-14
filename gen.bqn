@@ -62,7 +62,8 @@ cci ← ⟨⟩
       {
         g3n‿fn:
           curri+↩1
-          g3n≡"masked"?@;
+          # g3n≡"masked"?@;
+          (∨´"_rm"⍷fn)∨g3n≡"masked"?@; # ignore _rm to match to_json.py
         g3n‿fn:
           nrt‿nname‿nargs ← PF fn
           ort‿oname‿oargs ← PF (curri-1)⊑oall
@@ -81,11 +82,12 @@ cci ← ⟨⟩
             
             "archs"⋈ ⋈"rvv"
             "desc" ⋈ "<br>" Jn @⊸≢¨⊸/ ⟨
-              {nname≢oname? "Overloaded name: <code>"∾oname∾"</code>"; @}
+              # {nname≢oname? "Overloaded name: <code>"∾oname∾"</code>"; @}
               {(g3n≢"non-masked") ∧ g3n≢@? g3n; g2n} # {(g3n≡"masked") ∨ g3n≡"non-masked"? g2n∾" ("∾g3n∾")"; g3n≢@? g3n; g2n}
             ⟩
             "categories"   ⋈ ⋈ {𝕨∾'|'∾𝕩}´ @⊸≢¨⊸/ ⟨g1n, g2n, g3n⟩
             "implDesc"     ⋈ g2l
+            "overloaded"   ⋈ {nname≢oname? oname; @}
           ⟩ ⋄ @
       }¨ pc
     }¨ g2

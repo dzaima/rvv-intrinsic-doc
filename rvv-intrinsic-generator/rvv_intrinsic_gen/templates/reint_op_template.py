@@ -36,7 +36,7 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
   for decorator in decorator_list:
     decorator.write_text_header(G)
 
-    G.write("// Reinterpret between different type under the same SEW/LMUL\n")
+    G.section_comment("Reinterpret between different type under the same SEW/LMUL")
     # Variable in list means
     # [dst type, dst short type, src type, src short type]
     convert_set = [["float", "f", "int", "i"], ["float", "f", "uint", "u"],
@@ -75,7 +75,7 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
           **decorator.mask_args(type_helper.m, rt),
           src=src_type)
 
-    G.write("// Reinterpret between different SEW under the same LMUL\n")
+    G.section_comment("Reinterpret between different SEW under the same LMUL")
     # Variable in list means
     # [dst type, dst short type, src type, src short type]
     convert_set = [["int", "i", "int", "i"], ["uint", "u", "uint", "u"]]
@@ -118,8 +118,7 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
     # when the generator is for compatible header.
     if isinstance(G, CompatibleHeaderGenerator):
       continue
-    G.write("// Reinterpret between vector boolean types and LMUL=1 (m1)")
-    G.write(" vector integer types\n")
+    G.section_comment("Reinterpret between vector boolean types and LMUL=1 (m1) vector integer types")
     # [integer type, integer short type]
     convert_set = [["int", "i"], ["uint", "u"]]
     for args in prod(

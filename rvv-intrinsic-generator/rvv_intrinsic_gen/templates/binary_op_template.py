@@ -127,7 +127,7 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
             **decorator.tu_dest_args(type_helper.v),
             op1=type_helper.v,
             vl=type_helper.size_t)
-      elif "rgather" == op:
+      elif op in ["rgather", "rgatherei16"]:
         G.func(
             InstInfo.get(args, decorator, InstType.VVV),
             name="{OP}_v{OP2}_{TYPE}{SEW}m{LMUL}".format_map(args) +

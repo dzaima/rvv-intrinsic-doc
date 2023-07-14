@@ -16,6 +16,7 @@ limitations under the License.
 --------------------------------------------------------------------------------
 """
 
+import argparse
 import sys
 import re
 from intrinsic_decorator import IntrinsicDecorator
@@ -35,26 +36,27 @@ def type_parts(t):
   
 def func_arg_info(func_name):
   res = {
-    "vxrm": {"info": "range: [0;3]"}, # TODO replace with more proper note
-    "frm": {"info": "range: [0;4]; __RISCV_FRM"},
+    "vxrm": {"info": "__RISCV_VXRM"},
+    "frm": {"info": "__RISCV_FRM"},
   }
   if "_vget_" in func_name or "_vset_" in func_name:
     [st,dt] = func_name.split("_")[-2:]
     [sm, sx] = type_parts(st)
     [dm, dx] = type_parts(dt)
-    if sm==dm and sx!=dx and dx==1: # TODO remove 'and dx==1'
+    if sm==dm and sx!=dx:
       res["index"] = {"info": "range: [0;%s]" % int(max(dx/sx, sx/dx) - 1)}
     elif sm!=dm and sx==dx:
       res["index"] = {"info": "range: [0;%s]" % int(max(dm/sm, sm/dm) - 1)}
     else:
-      pass # raise Exception('unexpected types for '+func_name) # TODO uncomment when above TODO is completed
+      raise Exception('unexpected types for '+func_name)
   
   
   return res
 
 class JsonGenerator(Generator):
-  def __init__(self, f):
+  def __init__(self, f, pretty):
     super().__init__()
+    self.pretty = pretty
     self.has_tail_policy = True
     self.has_both_policies = True
     self.fd = f
@@ -88,14 +90,30 @@ class JsonGenerator(Generator):
       "archs": ["rvv"],
       "desc": self.curr_desc,
       "categories": [self.curr_category],
-      # "policies": [],
+      "policies": [],
       "implDesc": self.curr_link,
     }
     if Generator.is_support_overloaded(name, **kwargs):
       obj["overloaded"] = Generator.get_overloaded_op_name(name)
     
     if name_base in self.curr_intrinsic_map:
-      # self.curr_intrinsic_map[name_base]["policies"].append(suffix);
+      base = self.curr_intrinsic_map[name_base]
+      def compress_arg(a):
+        for i in range(len(base["args"])):
+          p = base["args"][i]
+          if p == a:
+            return i
+          if a["name"]=="mask" and a["type"].startswith("vbool"):
+            return a["type"]
+          if a["name"].startswith("maskedoff") and not a["type"].startswith("vbool"):
+            return a["type"]
+        return a
+      if obj["ret"] != base["ret"]:
+        raise Exception(F"Variation return type not equal to base for {name_full}")
+      base["policies"].append({
+        "s": suffix,
+        "a": list(map(compress_arg, obj["args"]))
+      });
       return
     else:
       self.curr_intrinsic_map[name_base] = obj
@@ -115,7 +133,7 @@ class JsonGenerator(Generator):
   def function_group(self, template, title, link, op_list, type_list, sew_list,
                      lmul_list, decorator_list):
     if len(decorator_list)>0:
-      decorator_list = sorted(decorator_list, key=lambda d: len(d.func_suffix)) # put no-policy version first
+      decorator_list = sorted(decorator_list, key=lambda d: len(d.func_suffix) + (99 if "rm" in d.func_suffix else 0)) # put no-policy version first, and no-rm version very first
     
     self.curr_link = link
     self.curr_desc = JsonGenerator.cleanup_title(title)
@@ -139,17 +157,25 @@ class JsonGenerator(Generator):
         self.fd.write(",")
       else:
         self.any_element = True
-      self.fd.write(json.dumps(obj, separators=(",", ":")))
-      # self.fd.write(json.dumps(obj, indent=2))
-      # self.fd.write(",\n");
+      
+      if self.pretty:
+        self.fd.write("\n");
+        self.fd.write(json.dumps(obj, indent=2))
+      else:
+        self.fd.write(json.dumps(obj, separators=(",", ":")))
 
   def decorator_group(self, decorator):
     self.curr_decorator = decorator
 
 
 def main():
-  with open(sys.argv[1], "w", encoding="utf-8") as f:
-    g = JsonGenerator(f)
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--pretty", action='store_true')
+  parser.add_argument("--out")
+  args = parser.parse_args()
+  
+  with open(args.out, "w", encoding="utf-8") as f:
+    g = JsonGenerator(f, args.pretty)
     f.write("[")
     inst.gen(g)
     f.write("]")

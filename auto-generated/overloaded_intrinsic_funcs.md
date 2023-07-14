@@ -23996,7 +23996,7 @@ vuint64m1_t __riscv_vredxor (vbool16_t mask, vuint64m4_t vector, vuint64m1_t sca
 vuint64m1_t __riscv_vredxor (vbool8_t mask, vuint64m8_t vector, vuint64m1_t scalar, size_t vl);
 ```
 
-### [Vector Widening Integer Reduction Functions](../rvv-intrinsic-api.md##152-vector-widening-integer-reduction-operations):
+### [Vector Widening Integer Reduction Functions](../rvv-intrinsic-api.md#152-vector-widening-integer-reduction-operations):
 
 **Prototypes:**
 ``` C
@@ -26034,7 +26034,7 @@ vbool8_t __riscv_vreinterpret_b8 (vuint64m1_t src);
 vuint64m1_t __riscv_vreinterpret_u64m1 (vbool8_t src);
 ```
 
-### [Vector LMUL Extension Functions](../rvv-intrinsic-api.mdvector-lmul-extension-and-truncation-functions):
+### [Vector LMUL Extension Functions](../rvv-intrinsic-api.md#vector-lmul-extension-and-truncation-functions):
 
 **Prototypes:**
 ``` C
@@ -26175,7 +26175,7 @@ vuint64m8_t __riscv_vlmul_ext_u64m8 (vuint64m2_t op1);
 vuint64m8_t __riscv_vlmul_ext_u64m8 (vuint64m4_t op1);
 ```
 
-### [Vector LMUL Truncation Functions](../rvv-intrinsic-api.mdvector-lmul-extension-and-truncation-functions):
+### [Vector LMUL Truncation Functions](../rvv-intrinsic-api.md#vector-lmul-extension-and-truncation-functions):
 
 **Prototypes:**
 ``` C

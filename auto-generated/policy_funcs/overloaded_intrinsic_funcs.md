@@ -32689,7 +32689,7 @@ vuint64m1_t __riscv_vredxor_tum (vbool16_t mask, vuint64m1_t maskedoff, vuint64m
 vuint64m1_t __riscv_vredxor_tum (vbool8_t mask, vuint64m1_t maskedoff, vuint64m8_t vector, vuint64m1_t scalar, size_t vl);
 ```
 
-### [Vector Widening Integer Reduction Functions](../rvv-intrinsic-api.md##152-vector-widening-integer-reduction-operations):
+### [Vector Widening Integer Reduction Functions](../rvv-intrinsic-api.md#152-vector-widening-integer-reduction-operations):
 
 **Prototypes:**
 ``` C
@@ -35119,10 +35119,10 @@ vuint64m8_t __riscv_vcompress_tu (vuint64m8_t maskedoff, vuint64m8_t src, vbool8
 ### [Reinterpret Cast Conversion Functions](../rvv-intrinsic-api.md#reinterpret-cast-conversion-functions):
 This operation don't have Policy Intrinsic Functions.
 
-### [Vector LMUL Extension Functions](../rvv-intrinsic-api.mdvector-lmul-extension-and-truncation-functions):
+### [Vector LMUL Extension Functions](../rvv-intrinsic-api.md#vector-lmul-extension-and-truncation-functions):
 This operation don't have Policy Intrinsic Functions.
 
-### [Vector LMUL Truncation Functions](../rvv-intrinsic-api.mdvector-lmul-extension-and-truncation-functions):
+### [Vector LMUL Truncation Functions](../rvv-intrinsic-api.md#vector-lmul-extension-and-truncation-functions):
 This operation don't have Policy Intrinsic Functions.
 
 ### [Vector Initialization Functions](../rvv-intrinsic-api.md#vector-initialization-functions):

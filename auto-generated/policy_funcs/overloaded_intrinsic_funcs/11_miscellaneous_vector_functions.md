@@ -4,10 +4,10 @@
 ### [Reinterpret Cast Conversion Functions](../rvv-intrinsic-api.md#reinterpret-cast-conversion-functions):
 This operation don't have Policy Intrinsic Functions.
 
-### [Vector LMUL Extension Functions](../rvv-intrinsic-api.mdvector-lmul-extension-and-truncation-functions):
+### [Vector LMUL Extension Functions](../rvv-intrinsic-api.md#vector-lmul-extension-and-truncation-functions):
 This operation don't have Policy Intrinsic Functions.
 
-### [Vector LMUL Truncation Functions](../rvv-intrinsic-api.mdvector-lmul-extension-and-truncation-functions):
+### [Vector LMUL Truncation Functions](../rvv-intrinsic-api.md#vector-lmul-extension-and-truncation-functions):
 This operation don't have Policy Intrinsic Functions.
 
 ### [Vector Initialization Functions](../rvv-intrinsic-api.md#vector-initialization-functions):

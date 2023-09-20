@@ -172,16 +172,16 @@ def seg_arg(v, nf, ptr_t=False, is_seg_load_store_tuple_type=False):
   args = {}
   if is_seg_load_store_tuple_type:
     if ptr_t:
-      args["vs3"] = f"{v.split('_')[0]}x{nf}_t *"
+      args["v_tuple"] = f"{v.split('_')[0]}x{nf}_t *"
     else:
-      args["vs3"] = f"{v.split('_')[0]}x{nf}_t"
+      args["v_tuple"] = f"{v.split('_')[0]}x{nf}_t"
   else:
     for i in range(nf):
       if ptr_t:
         vt = f"{v} *"
       else:
         vt = v
-      args[f"vs3_{i}"] = vt
+      args[f"v{i}"] = vt
   return args
 
 

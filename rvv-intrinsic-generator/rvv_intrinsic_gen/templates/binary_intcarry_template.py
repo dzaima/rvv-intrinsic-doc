@@ -37,6 +37,10 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
       v = type_helper.v
       s = type_helper.s
       m = type_helper.m
+      if "sbc" in args["OP"]:
+        carry = {"borrowin": m}
+      else:
+        carry = {"carryin": m}
 
       assert args["OP"] is not None
       args["OP"] = "v" + args["OP"]
@@ -51,9 +55,9 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
             decorator.func_suffix,
             return_type=v,
             **decorator.tu_dest_args(v),
-            vs2=v,
-            vs1=v,
-            v0=m,
+            op1=v,
+            op2=v,
+            **carry,
             vl=type_helper.size_t)
         G.func(
             inst_info=inst_info_vxm,
@@ -61,9 +65,9 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
             decorator.func_suffix,
             return_type=v,
             **decorator.tu_dest_args(v),
-            vs2=v,
-            rs1=s,
-            v0=m,
+            op1=v,
+            op2=s,
+            **carry,
             vl=type_helper.size_t)
 
     for args in prod(OP=op_list, TYPE=type_list, SEW=sew_list, LMUL=lmul_list):
@@ -71,6 +75,10 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
       v = type_helper.v
       s = type_helper.s
       m = type_helper.m
+      if "sbc" in args["OP"]:
+        carry = {"borrowin": m}
+      else:
+        carry = {"carryin": m}
 
       assert args["OP"] is not None
       args["OP"] = "v" + args["OP"]
@@ -89,34 +97,34 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
             name="{OP}_vvm_{TYPE}{SEW}m{LMUL}_b{MLEN}".format_map(args) +
             decorator.func_suffix,
             return_type=m,
-            vs2=v,
-            vs1=v,
-            v0=m,
+            op1=v,
+            op2=v,
+            **carry,
             vl=type_helper.size_t)
         G.func(
             inst_info_vxm,
             name="{OP}_vxm_{TYPE}{SEW}m{LMUL}_b{MLEN}".format_map(args) +
             decorator.func_suffix,
             return_type=m,
-            vs2=v,
-            rs1=s,
-            v0=m,
+            op1=v,
+            op2=s,
+            **carry,
             vl=type_helper.size_t)
         G.func(
             inst_info_vv,
             name="{OP}_vv_{TYPE}{SEW}m{LMUL}_b{MLEN}".format_map(args) +
             decorator.func_suffix,
             return_type=m,
-            vs2=v,
-            vs1=v,
+            op1=v,
+            op2=v,
             vl=type_helper.size_t)
         G.func(
             inst_info_vx,
             name="{OP}_vx_{TYPE}{SEW}m{LMUL}_b{MLEN}".format_map(args) +
             decorator.func_suffix,
             return_type=m,
-            vs2=v,
-            rs1=s,
+            op1=v,
+            op2=s,
             vl=type_helper.size_t)
 
   G.inst_group_epilogue()

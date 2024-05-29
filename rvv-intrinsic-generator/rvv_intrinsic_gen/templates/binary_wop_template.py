@@ -77,8 +77,8 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
               return_type=type_helper.wv,
               **decorator.mask_args(type_helper.m, type_helper.wv),
               **decorator.tu_dest_args(type_helper.wv),
-              vs2=type_helper.v,
-              vs1=type_helper.uiv,
+              op1=type_helper.v,
+              op2=type_helper.uiv,
               vl=type_helper.size_t)
           G.func(
               inst_info_wvs,
@@ -87,8 +87,8 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
               return_type=type_helper.wv,
               **decorator.mask_args(type_helper.m, type_helper.wv),
               **decorator.tu_dest_args(type_helper.wv),
-              vs2=type_helper.v,
-              rs1=type_helper.uis,
+              op1=type_helper.v,
+              op2=type_helper.uis,
               vl=type_helper.size_t)
       else:
         G.func(
@@ -98,8 +98,8 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
             return_type=type_helper.wv,
             **decorator.mask_args(type_helper.m, type_helper.wv),
             **decorator.tu_dest_args(type_helper.wv),
-            vs2=type_helper.v,
-            vs1=type_helper.v,
+            op1=type_helper.v,
+            op2=type_helper.v,
             **decorator.extra_csr_args(type_helper.uint),
             vl=type_helper.size_t)
         G.func(
@@ -109,8 +109,8 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
             return_type=type_helper.wv,
             **decorator.mask_args(type_helper.m, type_helper.wv),
             **decorator.tu_dest_args(type_helper.wv),
-            vs2=type_helper.v,
-            rs1=type_helper.s,
+            op1=type_helper.v,
+            op2=type_helper.s,
             **decorator.extra_csr_args(type_helper.uint),
             vl=type_helper.size_t)
 
@@ -123,8 +123,8 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
             return_type=type_helper.wv,
             **decorator.mask_args(type_helper.m, type_helper.wv),
             **decorator.tu_dest_args(type_helper.wv),
-            vs2=type_helper.wv,
-            vs1=type_helper.v,
+            op1=type_helper.wv,
+            op2=type_helper.v,
             **decorator.extra_csr_args(type_helper.uint),
             vl=type_helper.size_t)
         G.func(
@@ -134,8 +134,8 @@ def render(G, op_list, type_list, sew_list, lmul_list, decorator_list):
             return_type=type_helper.wv,
             **decorator.mask_args(type_helper.m, type_helper.wv),
             **decorator.tu_dest_args(type_helper.wv),
-            vs2=type_helper.wv,
-            rs1=type_helper.s,
+            op1=type_helper.wv,
+            op2=type_helper.s,
             **decorator.extra_csr_args(type_helper.uint),
             vl=type_helper.size_t)
 

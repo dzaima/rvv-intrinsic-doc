@@ -41,7 +41,7 @@ TYPES = ["bfloat"]
 def gen(g):
   if isinstance(g, CompatibleHeaderGenerator):
     assert False, "BFloat16 intrinsics is supported after v1.0"
-  decorators = IntrinsicDecorators(g.has_tail_policy)
+  decorators = IntrinsicDecorators(g.has_tail_policy, g.has_both_policies)
 
   ####################################################################
   g.start_group("BFloat16 Vector Loads and Stores Intrinsics")

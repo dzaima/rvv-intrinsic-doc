@@ -21,16 +21,17 @@ import sys
 import re
 from intrinsic_decorator import IntrinsicDecorator
 import inst
+import bfloat16_inst
 import json
 from generator import Generator
 
-type_regex = re.compile(r"[ifu]\d+m(f?)(\d+)(x(\d+))?")
+type_regex = re.compile(r"([ifu]\d+|bf16)m(f?)(\d+)(x(\d+))?")
 def type_parts(t):
   parts = re.match(type_regex, t)
-  mul = int(parts.group(2))
+  mul = int(parts.group(3))
   if parts.group(1) == "f":
     mul = 1/mul
-  count = parts.group(4)
+  count = parts.group(5)
   count = int(count) if count!=None else 1
   return [mul, count]
   
@@ -183,6 +184,7 @@ def main():
     g = JsonGenerator(f, args.pretty)
     f.write("[")
     inst.gen(g)
+    bfloat16_inst.gen(g)
     f.write("]")
     g.report_summary()
 

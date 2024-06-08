@@ -22,6 +22,7 @@ import re
 from intrinsic_decorator import IntrinsicDecorator
 import inst
 import bfloat16_inst
+import vector_crypto_inst
 import json
 from generator import Generator
 
@@ -185,6 +186,7 @@ def main():
     f.write("[")
     inst.gen(g)
     bfloat16_inst.gen(g)
+    vector_crypto_inst.gen(g)
     f.write("]")
     g.report_summary()
 

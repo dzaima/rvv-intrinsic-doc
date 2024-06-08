@@ -8,7 +8,7 @@ from constants import LMULS, WLMULS, SEWS, WSEWS, UITYPE
 
 
 def gen(g):
-  decorators = IntrinsicDecorators(g.has_tail_policy)
+  decorators = IntrinsicDecorators(g.has_tail_policy, g.has_both_policies)
 
   g.start_group("Zvbb - Vector Bit-manipulation used in Cryptography")
 

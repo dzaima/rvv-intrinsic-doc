@@ -265,7 +265,8 @@ class Generator(ABC):
       overloaded_name = "_".join([sn[0], sn[1], sn[-1]])
     elif any(op in name for op in [
         "vzext", "vsext", "vwadd", "vwsub", "vfwadd", "vfwsub", "vwadd",
-        "vwsub", "vfwadd", "vfwsub", "vmv", "vfmv"
+        "vwsub", "vfwadd", "vfwsub", "vmv", "vfmv", "vsm4r", "vaesef", "vaesem",
+        "vaesdf", "vaesdm"
     ]):
       # 2. compiler can not distinguish *.wx and *.vx, need encode them in
       #    suffix, for example:
@@ -452,7 +453,7 @@ class APITestGenerator(Generator):
     # different op name
     self.test_file_names = []
 
-  def write_file_header(self, has_float_type, has_bfloat16_type):
+  def write_file_header(self, has_float_type, has_bfloat16_type, name):
     #pylint: disable=line-too-long
     int_llvm_header = r"""// REQUIRES: riscv-registered-target
 // RUN: %clang_cc1 -triple riscv64 -target-feature +v -disable-O0-optnone \
@@ -481,9 +482,38 @@ class APITestGenerator(Generator):
         r""" -Wno-psabi -O3 -fno-schedule-insns -fno-schedule-insns2" } */
 
 """)
+
+    vector_crypto_llvm_header = (r"""// REQUIRES: riscv-registered-target
+// RUN: %clang_cc1 -triple riscv64 -target-feature +v -target-feature +zvl512b \
+// RUN:   -target-feature +zvbb \
+// RUN:   -target-feature +zvbc \
+// RUN:   -target-feature +zvkg \
+// RUN:   -target-feature +zvkned \
+// RUN:   -target-feature +zvknhb \
+// RUN:   -target-feature +zvksed \
+// RUN:   -target-feature +zvksh -disable-O0-optnone \
+// RUN:   -emit-llvm %s -o - | opt -S -passes=mem2reg | \
+// RUN:   FileCheck --check-prefix=CHECK-RV64 %s
+
+""")
+
+    def is_vector_crypto_inst(name):
+      vector_crypto_inst = [
+          "vandn", "vbrev", "vbrev8", "vrev8", "vclz", "vctz", "vrol", "vror",
+          "vwsll", "vclmul", "vclmulh", "vghsh", "vgmul", "vaesef", "vaesem",
+          "vaesdf", "vaesdm", "vaeskf1", "vaeskf2", "vaesz", "vsha2ms",
+          "vsha2ch", "vsha2cl", "vsm4k", "vsm4r", "vsm3me", "vsm3c"
+      ]
+      for inst in vector_crypto_inst:
+        if inst in name:
+          return True
+      return False
+
     if self.toolchain_type == ToolChainType.LLVM:
       if has_bfloat16_type:
         self.fd.write(bfloat16_llvm_header)
+      elif is_vector_crypto_inst(name):
+        self.fd.write(vector_crypto_llvm_header)
       elif has_float_type:
         self.fd.write(float_llvm_header)
       else:
@@ -539,6 +569,7 @@ class APITestGenerator(Generator):
     # For "vxrm" parameter of the fixed-point intrinsics, value for it must be
     # an immediate.
     func_decl = func_decl.replace(", unsigned int vxrm", "")
+    func_decl = func_decl.replace(", size_t uimm", "")
 
     # For "frm" parameter of the floating-point intrinsics, value for it must
     # be an immediate.
@@ -563,7 +594,7 @@ class APITestGenerator(Generator):
         has_float_type = True
 
     if header:
-      self.write_file_header(has_float_type, has_bfloat16_type)
+      self.write_file_header(has_float_type, has_bfloat16_type, name)
 
     def output_call_arg(arg_name, type_name):
       if ((name.startswith("vget") or name.startswith("vset")) \
@@ -576,6 +607,9 @@ class APITestGenerator(Generator):
 
       if arg_name == "frm":
         return "__RISCV_FRM_RNE"
+
+      if arg_name == "uimm":
+        return "0"
 
       return arg_name
 

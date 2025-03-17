@@ -51,7 +51,7 @@ def gen(g):
   if isinstance(g, CompatibleHeaderGenerator):
     decorators = LegacyIntrinsicDecorators(g.has_tail_policy)
   else:
-    decorators = IntrinsicDecorators(g.has_tail_policy)
+    decorators = IntrinsicDecorators(g.has_tail_policy, g.has_both_policies)
 
   ####################################################################
   g.start_group("Vector Loads and Stores Intrinsics")

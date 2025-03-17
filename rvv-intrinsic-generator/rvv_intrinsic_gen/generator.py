@@ -31,6 +31,7 @@ class Generator(ABC):
   Base class for all generators.
   """
   has_tail_policy = False
+  has_both_policies = False
 
   def __init__(self):
     self.generated_functions_set = set()
@@ -38,6 +39,13 @@ class Generator(ABC):
 
   def write(self, text):
     raise NotImplementedError
+  
+  def section_comment(self, comment):
+    self.write(f"// {comment}\n");
+  
+  def decorator_group(self, decorator):
+    if decorator.is_mask:
+      self.write("// masked functions\n")
 
   def write_title(self, text, link):
     raise NotImplementedError

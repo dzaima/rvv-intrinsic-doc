@@ -71,7 +71,7 @@ def render(G,
               name="{OP}_{S_TYPE}_s_{TYPE}{SEW}m{LMUL}_{TYPE}{SEW}".format_map(
                   args),
               return_type=type_helper.s,
-              vs1=type_helper.v)
+              src=type_helper.v)
         G.func(
             InstInfo.get(
                 args, decorator, vs_inst_type, required_ext=required_ext_list),
@@ -79,7 +79,7 @@ def render(G,
             decorator.func_suffix,
             return_type=type_helper.v,
             **decorator.dest_args(type_helper.v),
-            rs1=type_helper.s,
+            src=type_helper.s,
             vl=type_helper.size_t)
       elif op in ["slide1up", "slide1down"]:
         G.func(
@@ -90,8 +90,8 @@ def render(G,
             return_type=type_helper.v,
             **decorator.mask_args(type_helper.m, type_helper.v),
             **decorator.tu_dest_args(type_helper.v),
-            vs2=type_helper.v,
-            rs1=type_helper.s,
+            src=type_helper.v,
+            value=type_helper.s,
             vl=type_helper.size_t)
       elif op == "slideup":
         G.func(
@@ -101,9 +101,9 @@ def render(G,
             decorator.func_suffix,
             return_type=type_helper.v,
             **decorator.mask_args(type_helper.m, type_helper.v),
-            vd=type_helper.v,
-            vs2=type_helper.v,
-            rs1=type_helper.size_t,
+            dest=type_helper.v,
+            src=type_helper.v,
+            offset=type_helper.size_t,
             vl=type_helper.size_t)
       elif op == "slidedown":
         G.func(
@@ -114,8 +114,8 @@ def render(G,
             return_type=type_helper.v,
             **decorator.mask_args(type_helper.m, type_helper.v),
             **decorator.dest_args(type_helper.v),
-            vs2=type_helper.v,
-            rs1=type_helper.size_t,
+            src=type_helper.v,
+            offset=type_helper.size_t,
             vl=type_helper.size_t)
       elif op == "compress":
         G.func(
@@ -125,8 +125,8 @@ def render(G,
             decorator.func_suffix,
             return_type=type_helper.v,
             **decorator.dest_args(type_helper.v),
-            vs2=type_helper.v,
-            vs1=type_helper.m,
+            src=type_helper.v,
+            mask=type_helper.m,
             vl=type_helper.size_t)
 
   G.inst_group_epilogue()

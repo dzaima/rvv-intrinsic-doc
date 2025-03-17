@@ -56,14 +56,14 @@ def render(G,
       inst_type = InstType.VX
       extra_attr = ExtraAttr.NO_ATTR
       if op in ["vlse"]:
-        extra_addr_args["rs2"] = "ptrdiff_t"
+        extra_addr_args["bstride"] = "ptrdiff_t"
         inst_type = InstType.VXX
       if op in ["vloxei", "vluxei"]:
         elmul = type_helper.get_elmul(eew, sew)
         if elmul == 0:
           continue
         elmul_str = get_string_lmul(elmul, 1)
-        extra_addr_args["rs2"] = f"vuint{eew}m{elmul_str}_t"
+        extra_addr_args["bindex"] = f"vuint{eew}m{elmul_str}_t"
         inst_type = InstType.VV
 
       if op == "vleff":
@@ -85,7 +85,7 @@ def render(G,
           return_type=type_helper.v,
           **decorator.mask_args(type_helper.m, type_helper.v),
           **decorator.tu_dest_args(type_helper.v),
-          rs1=f"const {type_helper.s} *",
+          base=f"const {type_helper.s} *",
           **extra_addr_args,
           vl=type_helper.size_t)
 

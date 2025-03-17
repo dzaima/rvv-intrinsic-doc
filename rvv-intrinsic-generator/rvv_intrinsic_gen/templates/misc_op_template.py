@@ -138,7 +138,7 @@ def render(G,
           inst_info,
           name=func_name + decorator.func_suffix,
           return_type=dst_type,
-          value=type_helper.v)
+          op1=type_helper.v)
 
   # vcreate for non-tuple
   for decorator in decorator_list:

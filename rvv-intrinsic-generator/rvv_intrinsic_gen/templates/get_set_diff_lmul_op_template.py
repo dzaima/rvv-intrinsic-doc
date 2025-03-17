@@ -104,7 +104,7 @@ def render(G,
             return_type=type_helper.v,
             dest=type_helper.v,
             index=type_helper.size_t,
-            value=src_type)
+            val=src_type)
 
     # Tuple type vget/vset is supported for v1.0 or newer. The current
     # compatible header targets v0.10 to v0.11.
@@ -145,7 +145,7 @@ def render(G,
               return_type=tuple_type,
               dest=tuple_type,
               index=type_helper.size_t,
-              value=vector_type)
+              val=vector_type)
         else:
           assert False, "Unreachable"
 
